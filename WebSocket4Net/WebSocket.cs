@@ -597,7 +597,9 @@ namespace WebSocket4Net
             {
                 var client = Client;
 
-                if (client != null && client.IsConnected)
+                //SslStreamTcpSession has a delay between the tcp socket becomes opened and IsConnected becomes true, 
+                //so if we call Close() during this delay, we have to call Close() of client  otherwise the socket will leak. 
+                if (client != null && (client.IsConnected||client is SslStreamTcpSession))
                 {
                     client.Close();
                     return;
