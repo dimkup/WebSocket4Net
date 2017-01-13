@@ -585,7 +585,8 @@ namespace WebSocket4Net
 
 
             //if closing is in progress  - nothing to do
-            if (m_StateCode == WebSocketStateConst.Closing) return;
+            //if the websocket is closed, we shouldn't close it twice
+            if (m_StateCode == WebSocketStateConst.Closing || m_StateCode ==WebSocketStateConst.Closed) return;
 
             //The websocket never be opened
             if (Interlocked.CompareExchange(ref m_StateCode, WebSocketStateConst.Closed, WebSocketStateConst.None)
