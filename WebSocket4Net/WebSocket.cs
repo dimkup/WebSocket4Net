@@ -584,9 +584,9 @@ namespace WebSocket4Net
             m_ClosedArgs = new ClosedEventArgs((short)statusCode, reason);
 
 
-            //if closing is in progress  - nothing to do
+            
             //if the websocket is closed, we shouldn't close it twice
-            if (m_StateCode == WebSocketStateConst.Closing || m_StateCode ==WebSocketStateConst.Closed) return;
+            if (m_StateCode ==WebSocketStateConst.Closed) return;
 
             //The websocket never be opened
             if (Interlocked.CompareExchange(ref m_StateCode, WebSocketStateConst.Closed, WebSocketStateConst.None)
@@ -614,7 +614,8 @@ namespace WebSocket4Net
                 return;
             }
 
-            m_StateCode = WebSocketStateConst.Closing;
+            //if closing is in progress  - nothing to do
+            if (Interlocked.Exchange(ref m_StateCode, WebSocketStateConst.Closing) == WebSocketStateConst.Closing) return;
 
             //Disable auto ping
             ClearTimer();
