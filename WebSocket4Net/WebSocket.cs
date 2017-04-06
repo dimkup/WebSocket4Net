@@ -417,6 +417,8 @@ namespace WebSocket4Net
 
         void OnConnected()
         {
+            //We still can get leaked events from underlying Socket even in closed state, thus we should check for it here
+            if (m_StateCode == WebSocketStateConst.Closed) return;
             CommandReader = ProtocolProcessor.CreateHandshakeReader(this);
 
             if (Items.Count > 0)
@@ -660,6 +662,8 @@ namespace WebSocket4Net
 
         private void OnDataReceived(byte[] data, int offset, int length)
         {
+            //We still can get leaked events from underlying Socket even in closed state, thus we should check for it here
+            if (m_StateCode == WebSocketStateConst.Closed) return;
             while (true)
             {
                 int left;
